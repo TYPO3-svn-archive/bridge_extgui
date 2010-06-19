@@ -56,7 +56,7 @@ class tx_bridgeextgui_TreeModel{
 		foreach($base->getChilds() as $child_node){	
 			if(!$child_node->isLeaf()){
 				//if the child node is not a leaf call the metod recursive
-				$this->buildTreeArray($child_node, &$cur['children'][$i]);
+				$this->buildTreeArray($child_node, $cur['children'][$i]);
 			}else{
 				$cur['children'][$i] = $this->buildNodeArray($child_node);
 			}

@@ -12,17 +12,16 @@ function Printtree(){
 	* @access public
 	*/
 	this.init = function(){
-
 		this.loader = new Ext.tree.TreeLoader({ dataUrl:'index.php', baseParams: {ajax: '1', action: 'getprinttree'}, waitMsg:'Loading', preloadChildren: true});
         this.loader.addListener('load', _LoadPrintNode);
 
-		this.root = new Tree.AsyncTreeNode({text: 'Printtree',draggable:false, id:'0'});
-
         this.thetree = new Tree.TreePanel({el:'printtree',animate:true,autoScroll:true, loader: this.loader, containerScroll: true, enableDD:true});
-		this.thetree.setRootNode(this.root);
+		this.thetree.setRootNode(new Tree.AsyncTreeNode({text: 'Printtree',draggable:false, id:'0'}));
 	    this.thetree.addListener('nodedrop', _NodeDropAjax);
 	    this.thetree.addListener('contextmenu', _PrepareMenu);
 		this.thetree.addListener('movenode', _NodeMoveAjax);
+
+		
 	}
 
 	/**
@@ -155,11 +154,12 @@ function Printtree(){
 	}
 
 	var preparetree = function(){
-    	self.thetree.expand(true, true);
-       	self.thetree.expandAll();
-   		self.root.setText('Printtree of '+self.name);
-		self.thetree.setRootNode(self.root);
-		self.thetree.render();
+
+		self.thetree.expand(true, true);
+		self.thetree.expandAll();		
+		self.thetree.getRootNode().setText('Printtree of '+self.name);
+
+		self.thetree.render();		
 		self.thetree.show();
 	}
 	
@@ -171,8 +171,12 @@ function Printtree(){
 	* @return void
 	*/
     var _reload = function(){
-    	self.thetree.getLoader().on("beforeload", function(treeLoader, node) {treeLoader.baseParams.selection = self.id;}, this);
-    	self.thetree.getLoader().load(self.root,preparetree);
+    	self.thetree.getLoader().on("beforeload", 
+    			function(treeLoader, node) {
+    				treeLoader.baseParams.selection = self.id;
+    			}, this);
+
+    	self.thetree.getLoader().load(self.thetree.getRootNode(),preparetree);
     }
 
 	/**
